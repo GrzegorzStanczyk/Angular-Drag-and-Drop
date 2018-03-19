@@ -1,25 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
-  drag(event, data) {
-    console.log('data: ', data);
-    console.log('event: ', event);
-    event.dataTransfer.setData('text', event.target.id);
+  elements: Array<any>;
+
+  ngOnInit() {
+    this.elements = new Array(40);
   }
 
-  onDrop(event) {
+  drag(event) {
+    event.dataTransfer.setData('text', event.target.id);
+    event.dropEffect = 'link';
+  }
+
+  onDrop(event, el) {
     event.preventDefault();
     const dataTransfer = event.dataTransfer.getData('text');
-    event.target.appendChild(document.getElementById(dataTransfer));
+    el.appendChild(document.getElementById(dataTransfer));
   }
 
   allowDrop(event) {
     event.preventDefault();
+    event.dataTransfer.dropEffect = 'link';
   }
 }

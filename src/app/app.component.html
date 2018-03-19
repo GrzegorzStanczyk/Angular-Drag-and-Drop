@@ -1,17 +1,12 @@
 <div class="main">
-  <div class="draggable-content" (drop)="onDrop($event)" (dragover)="allowDrop($event)">
-    <div id="drag1" (dragstart)="drag($event, dragData)" draggable="true" class="draggable"></div>
-    <div id="drag2" (dragstart)="drag($event, dragData)" draggable="true" class="draggable"></div>
-    <div id="drag3" (dragstart)="drag($event, dragData)" draggable="true" class="draggable"></div>
-    <div id="drag4" (dragstart)="drag($event, dragData)" draggable="true" class="draggable"></div>
-    <div id="drag5" (dragstart)="drag($event, dragData)" draggable="true" class="draggable"></div>
-    <div id="drag6" (dragstart)="drag($event, dragData)" draggable="true" class="draggable"></div>
+  <div #main class="draggable-content" (drop)="onDrop($event, main)" (dragover)="allowDrop($event)">
+    <div *ngFor="let elem of elements; index as i; trackBy: trackById" id="drag{{i}}" (dragstart)="drag($event)" draggable="true" class="draggable"></div>
   </div>
 </div>
 <div class="aside">
   <div class="drop-container">
-    <div id="div1" (drop)="onDrop($event)" (dragover)="allowDrop($event)" class="drag-box"></div>
-    <div id="div2" (drop)="onDrop($event)" (dragover)="allowDrop($event)" class="drag-box"></div>
-    <div id="div3" (drop)="onDrop($event)" (dragover)="allowDrop($event)" class="drag-box"></div>
+    <div id="div1" #div1 (drop)="onDrop($event, div1)" (dragover)="allowDrop($event)" class="drag-box"></div>
+    <div id="div2" #div2 (drop)="onDrop($event, div2)" (dragover)="allowDrop($event)" class="drag-box"></div>
+    <div id="div3" #div3 (drop)="onDrop($event, div3)" (dragover)="allowDrop($event)" class="drag-box"></div>
   </div>
 </div>
