@@ -20,16 +20,28 @@ export class AppComponent implements OnInit {
     event.dataTransfer.effectAllowed = 'copy';
   }
 
-  onDrop(event, el) {
+  onDrop(event, elem) {
     event.preventDefault();
     const dataTransfer = event.dataTransfer.getData('text');
-    const clone = this.renderer.selectRootElement(`#${dataTransfer}`).cloneNode(true);
-    this.renderer.setProperty(clone, 'id', `picked-${dataTransfer}`);
-    this.renderer.listen(clone, 'dragstart', (ev => {
-      ev.dataTransfer.setData('text', ev.target.id);
-    }));
-    this.renderer.appendChild(el, clone);
-    // this.renderer.appendChild(el, this.renderer.selectRootElement(`#${dataTransfer}`));
+    let match = null;
+    elem.childNodes.forEach(element => {
+      if (element.id.includes(dataTransfer)) {
+        match = true;
+      }
+    });
+    if (match) {
+      return;
+    }
+    if (!dataTransfer.includes('picked')) {
+      const clone = this.renderer.selectRootElement(`#${dataTransfer}`).cloneNode(true);
+      this.renderer.setProperty(clone, 'id', `picked-${dataTransfer}`);
+      this.renderer.listen(clone, 'dragstart', (ev => {
+        ev.dataTransfer.setData('text', ev.target.id);
+      }));
+      this.renderer.appendChild(elem, clone);
+    } else {
+      this.renderer.appendChild(elem, this.renderer.selectRootElement(`#${dataTransfer}`));
+    }
   }
 
   allowDrop(event) {
