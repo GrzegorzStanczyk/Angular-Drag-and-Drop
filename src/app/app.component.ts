@@ -23,7 +23,13 @@ export class AppComponent implements OnInit {
   onDrop(event, el) {
     event.preventDefault();
     const dataTransfer = event.dataTransfer.getData('text');
-    this.renderer.appendChild(el, this.renderer.selectRootElement(`#${dataTransfer}`));
+    const clone = this.renderer.selectRootElement(`#${dataTransfer}`).cloneNode(true);
+    this.renderer.setProperty(clone, 'id', `picked-${dataTransfer}`);
+    this.renderer.listen(clone, 'dragstart', (ev => {
+      ev.dataTransfer.setData('text', ev.target.id);
+    }));
+    this.renderer.appendChild(el, clone);
+    // this.renderer.appendChild(el, this.renderer.selectRootElement(`#${dataTransfer}`));
   }
 
   allowDrop(event) {
