@@ -28,4 +28,8 @@ export class AppComponent implements OnInit {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'link';
   }
+
+  trackById(index: number) {
+    return index;
+  }
 }
