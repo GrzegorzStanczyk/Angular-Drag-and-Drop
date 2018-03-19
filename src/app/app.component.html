@@ -1,6 +1,6 @@
 <div class="main">
   <div #main class="draggable-content" (drop)="onDrop($event, main)" (dragover)="allowDrop($event)">
-    <div *ngFor="let elem of elements; index as i; trackBy: trackById" id="drag{{i}}" (dragstart)="drag($event)" draggable="true" class="draggable"></div>
+    <div *ngFor="let elem of elements; index as i; trackBy: trackById" id="drag{{i}}" (dragstart)="onDrag($event)" draggable="true" class="draggable"></div>
   </div>
 </div>
 <div class="aside">

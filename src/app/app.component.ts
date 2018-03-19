@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,26 +7,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
 
-  elements: Array<any>;
+  constructor(private renderer: Renderer2) {}
+
+  elements: Array<number>;
 
   ngOnInit() {
     this.elements = new Array(40);
   }
 
-  drag(event) {
+  onDrag(event) {
     event.dataTransfer.setData('text', event.target.id);
-    event.dropEffect = 'link';
+    event.dataTransfer.effectAllowed = 'copy';
   }
 
   onDrop(event, el) {
     event.preventDefault();
     const dataTransfer = event.dataTransfer.getData('text');
-    el.appendChild(document.getElementById(dataTransfer));
+    this.renderer.appendChild(el, this.renderer.selectRootElement(`#${dataTransfer}`));
   }
 
   allowDrop(event) {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'link';
+    event.dataTransfer.dropEffect = 'copy';
   }
 
   trackById(index: number) {
