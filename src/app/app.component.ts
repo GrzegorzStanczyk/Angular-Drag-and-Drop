@@ -25,16 +25,17 @@ export class AppComponent implements OnInit {
     const dataTransfer = event.dataTransfer.getData('text');
     let match = null;
     elem.childNodes.forEach(element => {
-      if (element.id.includes(dataTransfer)) {
+      // Prevent to move same draggable element to drop box
+      if (element.id.includes(dataTransfer.slice(0, dataTransfer.length - 1))) {
         match = true;
       }
     });
     if (match) {
       return;
     }
-    if (!dataTransfer.includes('picked')) {
+    if (!dataTransfer.includes(elem.id.slice(0, elem.id.length - 1))) {
       const clone = this.renderer.selectRootElement(`#${dataTransfer}`).cloneNode(true);
-      this.renderer.setProperty(clone, 'id', `picked-${dataTransfer}`);
+      this.renderer.setProperty(clone, 'id', `${dataTransfer}-${elem.id}`);
       this.renderer.listen(clone, 'dragstart', (ev => {
         ev.dataTransfer.setData('text', ev.target.id);
       }));
