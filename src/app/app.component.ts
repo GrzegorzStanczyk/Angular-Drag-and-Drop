@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
   }
 
   onDrag(event) {
+    console.log('event: ', event);
     event.dataTransfer.setData('text', event.target.id);
     event.dataTransfer.effectAllowed = 'copy';
   }
@@ -25,14 +26,21 @@ export class AppComponent implements OnInit {
     const dataTransfer = event.dataTransfer.getData('text');
     let match = null;
     elem.childNodes.forEach(element => {
+      console.log('element: ', element.id);
+      console.log('dataTransfer: ', dataTransfer);
       // Prevent to move same draggable element to drop box
-      if (element.id.includes(dataTransfer.slice(0, dataTransfer.length - 1))) {
+      // if (element.id.includes(dataTransfer.slice(0, dataTransfer.length - 1)) && element.id.includes('div')) {
+      // if (element.id.includes(dataTransfer)) {
+        // if (dataTransfer.includes('div')) {
+          // if (element.id.includes(dataTransfer.slice(0, dataTransfer.length - 1))) {
+      if (element.id.includes(dataTransfer.slice(0, 7))) {
         match = true;
       }
     });
     if (match) {
       return;
     }
+    console.log('retunr')
     if (!dataTransfer.includes(elem.id.slice(0, elem.id.length - 1))) {
       const clone = this.renderer.selectRootElement(`#${dataTransfer}`).cloneNode(true);
       this.renderer.setProperty(clone, 'id', `${dataTransfer}-${elem.id}`);
