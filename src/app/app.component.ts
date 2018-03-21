@@ -10,19 +10,19 @@ export class AppComponent implements OnInit {
   constructor(private renderer: Renderer2) {}
 
   elements: Array<number>;
-  draggedElement: ElementRef;
+  private draggedElement: ElementRef;
 
   ngOnInit() {
     this.elements = new Array(40);
   }
 
-  onDrag(event, element) {
+  onDrag(event, element): void {
     event.dataTransfer.setData('text', JSON.stringify({id: event.target.id, content: event.target.innerText}));
     event.dataTransfer.effectAllowed = 'copy';
     this.draggedElement = element;
   }
 
-  onDrop(event, elem) {
+  onDrop(event, elem): void {
     event.preventDefault();
     const dataTransfer = JSON.parse(event.dataTransfer.getData('text'));
     let match = null;
@@ -51,12 +51,12 @@ export class AppComponent implements OnInit {
     }
   }
 
-  allowDrop(event) {
+  allowDrop(event): void {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'copy';
   }
 
-  trackById(index: number) {
+  trackById(index: number): number {
     return index;
   }
 }
