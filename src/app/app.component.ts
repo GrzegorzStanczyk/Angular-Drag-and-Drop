@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -10,46 +10,44 @@ export class AppComponent implements OnInit {
   constructor(private renderer: Renderer2) {}
 
   elements: Array<number>;
+  draggedElement: ElementRef;
 
   ngOnInit() {
     this.elements = new Array(40);
   }
 
-  onDrag(event) {
-    console.log('event: ', event);
-    event.dataTransfer.setData('text', event.target.id);
+  onDrag(event, element) {
+    event.dataTransfer.setData('text', JSON.stringify({id: event.target.id, content: event.target.innerText}));
     event.dataTransfer.effectAllowed = 'copy';
+    this.draggedElement = element;
   }
 
   onDrop(event, elem) {
     event.preventDefault();
-    const dataTransfer = event.dataTransfer.getData('text');
+    const dataTransfer = JSON.parse(event.dataTransfer.getData('text'));
     let match = null;
     elem.childNodes.forEach(element => {
-      console.log('element: ', element.id);
-      console.log('dataTransfer: ', dataTransfer);
-      // Prevent to move same draggable element to drop box
-      // if (element.id.includes(dataTransfer.slice(0, dataTransfer.length - 1)) && element.id.includes('div')) {
-      // if (element.id.includes(dataTransfer)) {
-        // if (dataTransfer.includes('div')) {
-          // if (element.id.includes(dataTransfer.slice(0, dataTransfer.length - 1))) {
-      if (element.id.includes(dataTransfer.slice(0, 7))) {
+      if (element.id.includes(dataTransfer.id.slice(0, 7))) {
         match = true;
       }
     });
     if (match) {
       return;
     }
-    console.log('retunr')
-    if (!dataTransfer.includes(elem.id.slice(0, elem.id.length - 1))) {
-      const clone = this.renderer.selectRootElement(`#${dataTransfer}`).cloneNode(true);
-      this.renderer.setProperty(clone, 'id', `${dataTransfer}-${elem.id}`);
+    if (!dataTransfer.id.includes(elem.id.slice(0, elem.id.length - 1))) {
+      const clone = this.renderer.selectRootElement(`#${dataTransfer.id}`).cloneNode(true);
+      this.renderer.setProperty(clone, 'id', `${dataTransfer.id}-${elem.id}`);
       this.renderer.listen(clone, 'dragstart', (ev => {
-        ev.dataTransfer.setData('text', ev.target.id);
+        ev.dataTransfer.setData('text', JSON.stringify({id: ev.target.id, content: ev.target.innerText}));
       }));
+      this.renderer.appendChild(clone, this.renderer.createText(dataTransfer.content));
       this.renderer.appendChild(elem, clone);
+
+      this.renderer.appendChild(this.draggedElement, this.renderer.createText(dataTransfer.content));
     } else {
-      this.renderer.appendChild(elem, this.renderer.selectRootElement(`#${dataTransfer}`));
+      const movedElement = this.renderer.selectRootElement(`#${dataTransfer.id}`);
+      this.renderer.appendChild(movedElement, this.renderer.createText(dataTransfer.content));
+      this.renderer.appendChild(elem, movedElement);
     }
   }
 

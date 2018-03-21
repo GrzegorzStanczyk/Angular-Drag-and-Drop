@@ -5,9 +5,10 @@
     *ngFor="let elem of elements;
     index as i; trackBy: trackById"
     id="drag{{i}}"
-    (dragstart)="onDrag($event)"
+    #elem
+    (dragstart)="onDrag($event, elem)"
     draggable="true"
-    class="draggable">
+    class="draggable">{{i}}
   </div>
   </div>
 </div>
